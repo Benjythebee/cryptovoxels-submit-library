@@ -32,9 +32,7 @@ app.use(express.static(folderName));
 app.use('/bulma', express.static(__dirname + '/node_modules/bulma'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery'));
 
-if (process.env.NODE_ENV === "production") {
-  app.use(enforce.HTTPS({ trustProtoHeader: true }));
-}
+
 //app.use(cors())
 
 app.use(bodyParser.json({limit: '50mb'}));
