@@ -9,8 +9,11 @@ var multer = require('multer')
 var nodemailer = require("nodemailer")
 var axios = require('axios');
 var util = require('util')
-var dotenv = require('dotenv')
-require('dotenv').config()
+//var dotenv = require('dotenv')
+if(process.env.NODE_ENV=="development"){
+  require('dotenv').config()
+}
+
 const { version } = require('./package.json');
 var filter = require('./filter.js')
 
