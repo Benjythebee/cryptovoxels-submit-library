@@ -22,7 +22,7 @@ var filter = require('./filter.js')
 
 const PORT = process.env.PORT || 8000;
 const httpString=process.env.NODE_ENV=="development"?'http':'https'
-
+console.log(__dirname)
 // ----------------------- Engine variables
 //app.set('views', path.join(__dirname, './views'))
 
