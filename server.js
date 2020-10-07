@@ -67,7 +67,7 @@ app.post('/sendReport', function(req, res) {
     });
 
     var message = {
-      from: "Benjy.larcher@aol.com",
+      from: "app186833444@heroku.com",
       to: "Benjy.larcher@aol.com",
       subject: "[Submission] New submission by "+Body.Discord,
       attachments:[],
