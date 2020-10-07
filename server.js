@@ -22,7 +22,6 @@ var filter = require('./filter.js')
 
 const PORT = process.env.PORT || 8000;
 const httpString=process.env.NODE_ENV=="development"?'http':'https'
-const folderName=process.env.NODE_ENV=="development"?'u':'tmp'
 
 // ----------------------- Engine variables
 //app.set('views', path.join(__dirname, './views'))
@@ -39,7 +38,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, folderName+'/');
+        cb(null, 'u/');
     },
 
     // By default, multer removes file extensions so let's add them back
