@@ -22,7 +22,7 @@ var filter = require('./filter.js')
 
 const PORT = process.env.PORT || 8000;
 const httpString=process.env.NODE_ENV=="development"?'http':'https'
-console.log(__dirname)
+
 // ----------------------- Engine variables
 //app.set('views', path.join(__dirname, './views'))
 
@@ -106,6 +106,7 @@ app.post('/sendReport', function(req, res) {
 })
 
 app.post('/submit_file', function(req, res) {
+  console.log(req.headers.host)
     // 'profile_pic' is the name of our file input field in the HTML form
     let upload = multer({ storage: storage, fileFilter: filter.voxFilter }).single("voxfile");
 
