@@ -127,7 +127,9 @@ app.post('/submit_file', function(req, res) {
         }
 
         // Display uploaded image for user validation
-        res.status(200).send({err:false,msg:httpString+'://'+req.headers.host+':'+PORT +'/'+req.file.filename});
+        var url = process.env.NODE_ENV=="development"? httpString+'://'+req.headers.host+':'+PORT +'/'+req.file.filename : httpString+'://'+req.headers.host+'/'+req.file.filename 
+
+        res.status(200).send({err:false,msg:url});
     });
 });
 
