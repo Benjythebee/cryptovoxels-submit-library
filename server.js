@@ -27,7 +27,7 @@ const httpString=process.env.NODE_ENV=="development"?'http':'https'
 //app.set('views', path.join(__dirname, './views'))
 
 app.use(express.static('client'));
-app.use(express.static(folderName));
+app.use(express.static('u'));
 app.use('/bulma', express.static(__dirname + '/node_modules/bulma'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery'));
 
