@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+
+<canvas id="c" width="500" height="500"></canvas>
+
+<script src="https://rawgit.com/mrdoob/three.js/r71/build/three.min.js"></script>
+<script src="./libs/cannon.js"></script>
+<script src="../build/vox.js"></script>
+<script>
+
+window.onload = function() {
+    var updateListeners = [];
+    var update = function(frame) {
+        updateListeners.forEach(function(listener) {
+            listener(frame);
+        });
+    };
+    
+    var cannonWorld = new CANNON.World();
+    cannonWorld.gravity.set(0, -9.8, 0);
+    cannonWorld.broadphase = new CANNON.NaiveBroadphase();
+    cannonWorld.solver.iterations = 10;
+    cannonWorld.solver.tolerance = 0.1;
+    
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(70, 1, 0.1, 1000);
+    var cameraTarget = new THREE.Vector3(0, 20, 0);
+    updateListeners.push(function(frame) {
+        camera.position.x = 0;
+        camera.position.y = 40;
+        camera.position.z = 60;
+        camera.lookAt(cameraTarget);
+    });
+    
+    var directionalLight = new THREE.DirectionalLight(0xffffff);
+    directionalLight.castShadow = true;
+    directionalLight.shadowCameraVisible = false;
+    directionalLight.shadowMapWidth = directionalLight.shadowMapHeight = 2048;
+    directionalLight.shadowDarkness = 0.8;
+    updateListeners.push(function(frame) {
+        directionalLight.position.x = Math.cos(frame * -0.001) * 100;
+        directionalLight.position.y = 100;
+        directionalLight.position.z = Math.sin(frame * -0.001) * 100;
+    });
+    scene.add(directionalLight);
+
+    var ambientLight = new THREE.AmbientLight(0xaaaaaa);
+    scene.add(ambientLight);
+    
+    var cannonGround = new CANNON.Body({
+        mass: 0,
+        shape: new CANNON.Plane()
+    });
+    cannonGround.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI * -0.5);
+    cannonWorld.add(cannonGround);
+    
+    var ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(300, 300),
+        new THREE.MeshPhongMaterial({
+            color: 0x555555,
+            shininess: 1,
+        })
+    );
+    ground.quaternion.copy(cannonGround.quaternion);
+    ground.castShadow = false;
+    ground.receiveShadow = true;
+    scene.add(ground);
+    
+    var renderer = new THREE.WebGLRenderer({
+        canvas: document.getElementById("c")
+    });
+    renderer.setSize(500, 500);
+    renderer.shadowMapEnabled = true;
+    // renderer.shadowMapSoft = true;
+    renderer.setClearColor(0x000000);
+    
+    document.onclick = function() {
+
+    var parser = new vox.Parser();
+    var parseTasks = [
+        "vox/mv0.97/p23.vox",
+        "vox/mv0.97/p31.vox",
+    ].map(function(path) {
+        return parser.parse(path);
+    });
+    Promise
+        .all(parseTasks)
+        .then(function(voxelDataArray) {
+            var builders = voxelDataArray.map(function(voxelData, i) {
+                var builder = new vox.MeshBuilder(voxelData, { originToBottom: false });
+                return builder;
+            });
+            
+            var rikkaBuilder = builders[0];
+            var manaBuilder = builders[1];
+            
+            var mesh = rikkaBuilder.createMesh();
+            mesh.castShadow = true;
+            mesh.receiveShadow = false;
+            mesh.position.x = -8;
+            mesh.position.y = 20;
+            mesh.position.z = -8;
+            scene.add(mesh);
+            mesh.geometry.computeBoundingBox();
+            var cannonBox = createManyBox(rikkaBuilder);
+            cannonBox.position.x = mesh.position.x;
+            cannonBox.position.y = mesh.position.y;
+            cannonBox.position.z = mesh.position.z;
+            cannonBox.quaternion.copy(mesh.quaternion);
+            cannonWorld.add(cannonBox);
+            updateListeners.push(function() {
+                mesh.position.copy(cannonBox.position);
+                mesh.quaternion.copy(cannonBox.quaternion);
+            });
+
+            var iframe = frame;
+            updateListeners.push(function(frame) {
+                if (frame % 30 === 0) {
+                    var mesh = manaBuilder.createMesh();
+                    mesh.castShadow = true;
+                    mesh.receiveShadow = false;
+                    
+                    mesh.position.x = -10 + Math.random() * 20;
+                    mesh.position.y = 100;
+                    mesh.position.z = -10 + Math.random() * 20;
+                    mesh.rotation.y = 1;
+                
+                    scene.add(mesh);
+                    
+                    mesh.geometry.computeBoundingBox();
+                    
+                    var cannonBox = createManyBox(manaBuilder);
+                    cannonBox.position.x = mesh.position.x;
+                    cannonBox.position.y = mesh.position.y;
+                    cannonBox.position.z = mesh.position.z;
+                    cannonBox.quaternion.copy(mesh.quaternion);
+                    cannonWorld.add(cannonBox);
+                    updateListeners.push(function() {
+                        mesh.position.copy(cannonBox.position);
+                        mesh.quaternion.copy(cannonBox.quaternion);
+                    });
+                }
+            });
+        });
+
+    };
+    
+    var frame = 0;
+    var render = function() {
+        update(frame++);
+        cannonWorld.step(60 / 1000);
+        renderer.render(scene, camera);
+        requestAnimationFrame(render);
+    };
+    render();
+};
+
+var createManyBox = function(builder) {
+    var body = new CANNON.Body({
+        mass: 1
+    });
+    var size = builder.voxelData.size;
+    var voxels = builder.voxelData.voxels;
+    
+    var o = {
+        x: size.x * -0.5,
+        y: size.y * -0.5,
+        z: size.z * -0.5,
+    };
+    var h = new CANNON.Vec3(builder.voxelSize * 0.5, builder.voxelSize * 0.5, builder.voxelSize * 0.5);
+    var box = new CANNON.Box(h);
+    voxels
+        .filter(function(vd, i) {
+            return builder.isOuterVoxel(vd);
+        })
+        .filter(function(vd, i) { // 適当に間引く
+            return i % 4 === 0;
+        })
+        .forEach(function(voxel) {
+            var offset = new CANNON.Vec3(o.x + voxel.x, o.z + voxel.z, -(o.y + voxel.y));
+            body.addShape(box, offset);
+        });
+    
+    return body;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <!--  JQUERY -->
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <!--<script src="../extra/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <link href="../extra/jquery-ui-1.12.1/jquery-ui.min.css"  rel="stylesheet"> -->
+
+    <!--  BUNDLE INCLUDING ETHERJS, AXIOS, THREE and ORBITCONTROLS -->
+    <!--<script src="../extra/ccapture.js/build/CCapture.min.js"></script>-->
+    <!-- Include WebM Writer if you want to export WebM -->
+   <!--<script src="../extra/ccapture.js/src/webm-writer-0.2.0.js"></script>-->
+    <!-- Include gifjs if you want to export GIF -->
+    <!--<script src="../extra/ccapture.js/src/gif.js"></script>-->
+
+    <script type="module" src="../bundle2.js"></script>
+    <link href="../index.scss" rel="stylesheet">
+    <!--  BOOTSTRAP / BULMA -->
+    <link href="/bulma/css/bulma.min.css" rel="stylesheet">
+     <!--<link href="../extra/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../extra/bootstrap/dist/js/bootstrap.min.js"></script>-->
+    <!--  FONT AWESOME -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
+    <!--  VOX PARSER -->
+    
+    <script defer src="../vox.js-master/build/vox.js"></script>
+    <!--<script src="https://cdn.rawgit.com/daishihmr/vox.js/1.0.3/build/vox.min.js" //Newer version of the parser, but doesn't work currently
+        charset="utf-8"
+        type="text/javascript">
+</script>-->
+
+    <title>Submit Vox model</title>
+
+
+    <style>
+
+    </style> 
+    
+    <!--  APP.JS -->
+    <script src="../app.js"></script>
+
+    <!--loader-->
+</head>
+<body>
+    
+<%- include ("menu.ejs") %>
+<div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title"></p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="ball-loader">
+                <div class="ball-loader-ball ball1"></div>
+                <div class="ball-loader-ball ball2"></div>
+                <div class="ball-loader-ball ball3"></div>
+            </div>
+        </section>
+      </div>
+
+    <button class="modal-close is-large is-hidden" aria-label="close"></button>
+  </div>
+<section class="section">
+
+
+
+    <div class="container" id="profilecontainer">
+        <div class='alert alert-warning alert-dismissible hide' id="changeNetworkAlert" role='alert' hidden>
+            <strong></strong>
+            <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+            <span aria-hidden='true'>&times;</span>
+            </button>
+      </div>
+      <div class="columns">
+        <div class="column is-8">
+
+            <div class="container"><!-- upload container -->
+                <div id="loader" class="text-center">
+                    <p class="text-center"> <img src="../load.svg" alt="loading"> </p>
+                  </div>
+                  <div class="container" id="content"><!-- upload form -->
+                        <form class="form" onSubmit="">
+    
+                            <div class="field">
+                                <label class="label">Discord Name </label>
+                                <div class="control">
+                                  <input class="input" type="text" placeholder="Discord" style="width: 33%;" id="discordId" required>
+                                </div>
+                              </div>
+
+                              
+                              <div class="field">
+                                <div class="control">
+                                  <label class="checkbox">
+                                    <input type="checkbox" id='termsCheck' required>
+                                    I understand the <a href="#" class="showTerms">terms of making my models publics</a>
+                                  </label>
+                                </div>
+                              </div>
+                            </form>
+                              <div class="container" id="media_list"><!-- list of media -->
+                                <div class="box mt-5" id="repeatable_media" ><!-- Begin Box media-->
+                                    <article class="media">
+                                        <div class="media-content">
+                                            <div class="content">
+                                                <div class="level">
+                                                    <div class="level-right">
+                                                        <div class="field">
+                                                            <div class="file has-name">
+                                                                <label class="file-label">
+                                                                <input class="file-input" onChange="App.uploadFile(this);" type="file" accept=".vox" id="formcontrolfile" required>
+                                                                <span class="file-cta">
+                                                                    <span class="file-icon">
+                                                                    <i class="fas fa-upload"></i>
+                                                                    </span>
+                                                                    <span class="file-label">
+                                                                    Choose a file…
+                                                                    </span>
+                                                                </span>
+                                                                <span class="file-name">
+                                                                    ...
+                                                                </span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="level-item">
+        
+                                                        <button class="button is-dark loadToCanvas" id="load" disabled>Load</button>
+        
+                                                        <button class="button is-dark screenshotButton pl-2" id="takescreen" disabled>Take a screenshot</button>
+            
+                                                    </div>
+
+                                                </div><!-- end Level -->
+                                            
+                                            <div class='rows'>
+                                                <div class='row is-full'>
+                                                    <span>Has to be 32x32x32 or lower</span>
+                                                    <p></p>
+                                                    <p class="help is-danger errorInvalid is-hidden">You should select valid files only!</p>
+                                                        <p class="help is-danger errorUploading is-hidden">An error occurred while uploading the file</p>
+                                                        <p class="help is-danger errorCanceled is-hidden">The upload has been canceled by the user or the browser dropped the connection</p>
+                                                        <p class="help is-danger errorToobig is-hidden"> One of your files is too big.</p>
+                                                        <div id="fileinfovox">
+                                                            <div class="text-muted" id="filenamevox "></div>
+                                                            <div class="text-muted" id="filesizevox"></div>
+                                                            <div class=""><small id="voxVoxelSize" class="text-muted"></small></div>
+                                                        </div>
+                                                </div>
+                                            </div><!-- end rows -->
+                                        </div>
+                                          <nav class="level is-mobile">
+                                            <div class="level-left">
+                                                <a class="level-item addBox" aria-label="reply" id="addBox">
+                                                    <span class="icon is-small">
+                                                      <i class="fas fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                  </a>
+                                                  <a class="level-item removeBox" aria-label="retweet" id="removeBox">
+                                                    <span class="icon is-small">
+                                                      <i class="fas fa-minus" aria-hidden="true"></i>
+                                                    </span>
+                                                  </a>
+                                            </div>
+                                          </nav>
+                                        </div>
+                                        <div class="media-right">
+                                            <figure class="image is-32x32">
+                                                <img class="" style="margin:auto;" id="screenshotpreview">
+                                              </figure>
+                                          </div>
+                                      </article>
+                                    </div><!-- End Box media-->
+        
+                               
+                              </div>
+                    <div class="container mt-5">
+                            <div class="">
+                                <button class="button is-info is-rounded" id="submit_files">Submit <i class="fa fa-upload ml-1"></i></button>
+                                <p class="Total_weight"></p>
+                            </div>
+                        </div>
+    
+                  </div>
+    
+            </div>
+
+        </div><!-- End of column is-8-->
+        <div class="column is-4 is-vcentered">
+            <canvas class="w-100" style="background-image: linear-gradient(#8a9ee6,#8ae6e1); min-width: 480px;" id="canvas1"></canvas>
+
+            <div class="container">
+                <span>Position of your item:</span>                                        
+                <div class="columns">
+                    <div class="column is-3 field">
+                        <label class="label is-small" for="x1">x</label>
+                        <input class="input is-small toggleInput" id="x1" type="number" min="-100" step="1">
+                    </div>
+                    <div class="column is-3 field">
+                        <label class="label is-small" for="y1">y</label>
+                        <input class="input is-small toggleInput" id="y1" type="number" min="-100" step="1">
+                    </div>
+                    <div class="column is-3 field">
+                        <label class="label is-small" for="z1">z</label>
+                        <input class="input is-small toggleInput" id="z1" type="number" min="-100" step="1">
+                    </div>
+                    </div>
+
+            </div>
+            <div class="container">
+                <span>Rotation of your item:
+                </span>                                          
+                <div class="columns">
+                    <div class="column is-3 field">
+                        <label class="label is-small" for="xR1">x</label>
+                        <input class="input is-small toggleInput" id="xR1" type="number" min="-100" step="0.5">
+                    </div>
+                    <div class="column is-3 field">
+                        <label class="label is-small" for="yR1">y</label>
+                        <input class="input is-small toggleInput" id="yR1" type="number" min="-100" step="0.5">
+                    </div>
+                    <div class="column is-3 field">
+                        <label class="label is-small" for="zR1">z</label>
+                        <input class="input is-small toggleInput" id="zR1" type="number" min="-100" step="0.5">
+                    </div>
+                    </div>
+
+            </div>
+            <div class="container">
+            <span>Scale your item: </span>                                        
+            <div class="columns">
+                <div class="column is-3 field">
+                    <label class="label is-small" for="xS1">x</label>
+                    <input class="input is-small toggleInput" id="xS1" type="number" min="-9" step="0.5">
+                </div>
+                <div class="column is-3 field">
+                    <label class="label is-small" for="yS1">y</label>
+                    <input class="input is-small toggleInput" id="yS1" type="number" min="-9" step="0.5">
+                </div>
+                <div class="column is-3 field">
+                    <label class="label is-small" for="zS1">z</label>
+                    <input class="input is-small toggleInput" id="zS1" type="number" min="-9" step="0.5">
+                </div>
+                </div>
+            </div>
+        </div><!-- End of column is-4 -->
+      </div>
+    </div>
+    </section>
+
+    <!--/container-->
+
+
+<script type="text/javascript">
+
+$('#upload_form').on('keyup keypress', function(e) {
+  var keyCode = e.keyCode || e.which;
+  if (keyCode === 13) { 
+    e.preventDefault();
+    return false;
+  }
+});
+    var canvas = document.getElementById("canvas1");
+    canvas.width  = 480;
+    canvas.height = 480;
+    var urlinput;
+    var voxsize;
+    var Vox_filename;
+    var groundOn =true;
+    var currentNature=0;
+    var renderisrunning;
+    //Array meshes
+    var arrayMeshesNature=[];
+
+    // common variables
+    var iBytesUploaded = 0;
+    var iBytesTotal = 0;
+    var iPreviousBytesLoaded = 0;
+    var iMaxFilesize = 1048576; // 5MB
+    var oTimer = 0;
+    var sResultFileSize = '';
+
+    function bytesToSize(bytes) {
+        var sizes = ['Bytes', 'KB', 'MB'];
+        if (bytes == 0) return 'n/a';
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+    };
+    function hextorgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+            rgb: parseInt(result[1], 16) + ", " + parseInt(result[2], 16) + ", " + parseInt(result[3], 16)
+        } : null;
+    }
+
+    function simple_domain(url)
+  {
+
+    var urll = new URL(url);
+    var temp=urll.host.split('.')
+    if(temp.includes('dropbox')){
+        urll.host = "dl.dropbox.com";
+        urll.search=''
+    }
+    
+    return urll.toString();
+
+  }
+
+
+    function upload_vox(urlinput,DOMelem,filename) {
+        JParentofElement = $(DOMelem);
+
+
+        const screenshotButton = JParentofElement.find('#takescreen');
+        const loadButton = JParentofElement.find('.loadToCanvas');
+
+        var scene = new THREE.Scene();
+        var renderer = new THREE.WebGLRenderer({
+            
+            canvas: document.getElementById("canvas1"),
+            antialias: true,
+             alpha: true,
+             shadowMapEnabled: true,
+            shadowMapSoft: true
+        });
+        renderer.shadowMap.enabled = false;
+
+        var camera = new THREE.PerspectiveCamera(70, 1, 0.1, 8000);
+        var cameraTarget = new THREE.Vector3(0,100,0);
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+        var frame = 1;
+        camera.position.set(50,250,250)
+        camera.lookAt(cameraTarget);
+        controls.update();
+        $('#CamX').val(cameraTarget.x)
+        $('#CamY').val(cameraTarget.y)
+        $('#CamZ').val(cameraTarget.z)
+        
+        var directionalLight = new THREE.DirectionalLight(0xffffff,1);
+        directionalLight.castShadow = true;
+        directionalLight.position.set(300, 400, 50);
+        directionalLight.position.multiplyScalar(1.3);
+        directionalLight.shadow.mapSize.width = 512;
+        directionalLight.shadow.mapSize.height = 512;
+
+        directionalLight.castShadow = true;
+
+
+        var d = 200;
+
+        directionalLight.shadow.camera.Left = -d;
+        directionalLight.shadow.camera.right = d;
+        directionalLight.shadow.camera.top = d;
+        directionalLight.shadow.camera.bottom = -d;
+
+        directionalLight.shadow.camera.far = 1000;
+        directionalLight.shadow.Darkness = 0.8;
+        scene.add(directionalLight);
+
+        var ambientLight = new THREE.AmbientLight(0xaaaaaa);
+        scene.add(ambientLight);
+        
+        var img= new THREE.MeshLambertMaterial({         // ADDDDDDDDDINNNNNGG THE GROUND
+            color: 0x555555
+        })
+        //img.map.needsUpdate = true; //ADDED
+        var ground = new THREE.Mesh(new THREE.PlaneGeometry(5000, 5000),new THREE.MeshBasicMaterial({color: 0x555555}) );
+        ground.name = "ground";
+        ground.rotation.x = Math.PI * -0.5;
+        ground.position.y=5
+        ground.receiveShadow = true;
+        ground.castShadow=false
+        ground.visible=true
+
+        
+        scene.add(ground);
+
+        var  bgtexture = new THREE.TextureLoader().load("../texture/bgcolor.png");
+        //var colorbg = new THREE.Color("rgb(152, 212, 227)");
+
+        scene.background =bgtexture;
+
+        renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+
+        var parser = new vox.Parser();
+        var parseTasks = [
+            urlinput,
+        ].map(function(path) {
+            return parser.parse(path);
+        });
+        Promise
+            .all(parseTasks)
+            .then(function(voxelDataArray) {
+                voxelDataArray.forEach(function(voxelData, i) {
+                    var b = new vox.MeshBuilder(voxelData, {
+                        voxelSize: 8.0,
+                        vertexColor: false,
+                        optimizeFaces: true,
+                    });
+                    var vD = new vox.VoxelData();
+                    vD.size = voxelData.size;
+                    vD.palette = voxelData.palette;
+                    for(i=0;i<voxelData.voxels.length;i++){
+                        if(b.isOuterVoxel(voxelData.voxels[i])){
+                            vD.voxels.push(voxelData.voxels[i]);
+                        }
+                    }
+                    var builder = new vox.MeshBuilder(vD, {
+                        voxelSize: 1.0,
+                        vertexColor: false,
+                        optimizeFaces: true,
+                    });
+                    b=null;
+                    var mesh = builder.createMesh();
+
+                    var fv = new THREE.Vector3();
+
+                    //CREATE MESH
+                    mesh.castShadow = true; //default is false
+                    mesh.position.y=8
+                    mesh.name="item"
+                    mesh.scale.x=8
+                    mesh.scale.y=8
+                    mesh.scale.z=8
+                    $('#x1').val(mesh.position.x)
+                    $('#y1').val(mesh.position.y)
+                    $('#z1').val(mesh.position.z)
+
+                    $('#xR1').val(mesh.rotation.x)
+                    $('#yR1').val(mesh.rotation.y)
+                    $('#zR1').val(mesh.rotation.z)
+
+                    $('#xS1').val(mesh.scale.x)
+                    $('#yS1').val(mesh.scale.y)
+                    $('#zS1').val(mesh.scale.z)
+
+                    scene.add(mesh);
+
+                    voxsize = Object.values(vD.size);
+                    JParentofElement.find('#voxVoxelSize').html('x: '.concat(voxsize[0], ' y: ', voxsize[1], ' z: ', voxsize[2]));
+
+                    screenshotButton.attr('disabled',false);
+                    screenshotButton.html('Take a screenshot');
+                    screenshotButton.removeClass('disabled');
+                    loadButton.attr('disabled',false);
+                    loadButton.removeClass('disabled');
+
+
+                    App.blockToggle()
+                });
+            });
+
+        var render = function(bool=false) {
+            const canvas = renderer.domElement;
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+			renderer.render( scene, camera );
+        
+            controls.update();
+        };
+
+        function animate() {
+            // update(frame);
+            renderisrunning=requestAnimationFrame(animate);
+            controls.update();
+            render();
+
+        }
+        renderisrunning=requestAnimationFrame(animate);
+        function removeEntity(object) {
+            var selectedObject = scene.getObjectByName(object.name);
+            scene.remove( selectedObject );
+            scene.remove(object);
+            animate();
+        }
+
+
+        //Get camera changes
+        function onPositionChange(o) {
+            console.log('pos change:', o)
+        }
+
+        //controls.addEventListener('change', onPositionChange);
+
+        //Get item changes
+        $('#x1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.position.x=parseFloat($('#x1').val())
+        })
+        $('#y1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.position.y=parseFloat($('#y1').val())
+        })
+        $('#z1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.position.z=parseFloat($('#z1').val())
+        })
+        // rotation
+        $('#xR1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.rotation.x=parseFloat($('#xR1').val())
+        })
+        $('#yR1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.rotation.y=parseFloat($('#yR1').val())
+        })
+        $('#zR1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.rotation.z=parseFloat($('#zR1').val())
+        })
+                // Scale
+        $('#xS1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.scale.x=parseFloat($('#xS1').val())
+        })
+        $('#yS1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.scale.y=parseFloat($('#yS1').val())
+        })
+        $('#zS1').on('change',e=>{
+            var item = scene.getObjectByName("item");
+            item.scale.z=parseFloat($('#zS1').val())
+        })
+        // Camera target
+        $('#CamX').on('change',e=>{
+
+            controls.target.set(parseInt($('#CamX').val()), cameraTarget.y, cameraTarget.z);
+            controls.update()
+
+        })
+        $('#CamY').on('change',e=>{
+            controls.target.set(cameraTarget.x, parseInt($('#CamY').val()), cameraTarget.z);
+
+        controls.update()
+        })
+        $('#CamZ').on('change',e=>{
+            controls.target.set(cameraTarget.x, cameraTarget.y, parseInt($('#CamZ').val()));
+            controls.update();
+
+        })
+
+        var temporaryfilename;
+        screenshotButton.on('click', async (e) => {
+            //$(e.target).closest('div[class^="box"]')
+            var index = await App.getElementIndex(DOMelem)
+            screenshotButton.html('<img width="1rem" src="../load.svg" alt="loading">')
+            render(true);
+
+            var pngUrl = canvas.toDataURL(); // get URL data
+            var head = 'data:image/png;base64,';
+            var imgFileSize = Math.round((pngUrl.length - head.length)*3/4) ;
+            App.payload.setFileAttribute(index,'weightimg',parseInt(imgFileSize))
+            var newPayloadSize= App.payload.computeTotalSize()
+            $(".Total_weight").html(bytesToSize(newPayloadSize))
+
+            canvas.toBlob((blob) => {
+
+
+                var f = App.filenames[index]
+                temporaryfilename = `${f}.png`;
+
+                var url =URL.createObjectURL(blob)
+                JParentofElement.find("#screenshotpreview").attr("src", URL.createObjectURL(blob));
+                JParentofElement.find("#screenshotpreview").attr('name', temporaryfilename);
+                JParentofElement.find("#screenshotpreview").css("display","block");
+
+                
+                App.payload.setFileAttribute(index,'imgPath',pngUrl)
+                App.payload.setFileAttribute(index,'sizeX',JParentofElement.find('#voxVoxelSize').html())
+                //App.files[index].imgPath=pngUrl
+                //App.files[index].size=JParentofElement.find('#voxVoxelSize').html()
+                screenshotButton.html('Take a screenshot')
+                })
+        });
+
+
+        /*$("#loadCustomPreset").on('click',e=>{
+            cancelAnimationFrame(renderisrunning);
+
+        minter.setAddPreset(urlinput)
+        })*/
+        
+
+    };
+
+    $("#submit_files").click(function(){
+
+        if(document.getElementById("termsCheck").checked && $("#discordId").val()!="" ){
+            if(App.payload.getSize<52428800){
+                
+                App.payload.discord=$("#discordId").val()
+                App.payload.terms=true
+                //App.payload.computeTotalSize()
+                var jsonSubmission= App.payload
+                //var jsonSubmission= {Discord: $("#discordId").val() , terms: true ,files: App.files}
+                App.sendSubmission(jsonSubmission).then(response=>{
+                    $('.modal-card').find('.modal-card-body').html('<div class="level-item"><p><strong>Submission sent!</strong></p><p>Thank you!</p></div>')
+                    setTimeout(()=>{
+                        App.modal.close()
+                    },1500)
+                    
+                    console.log(response)
+                })
+            }else{
+                alert("The Submission payload is too heavy! (more than 50mb)")
+            }// end check Size payload
+        }else{
+            App.payload.terms=false
+            $('.modal').find('.modal-card-body').html('<div class="has-text-centered"><p><strong>Error!</strong></p><p>Some inputs are missing</p></div>')
+            setTimeout(()=>{
+                App.modal.close()
+            },1500)
+            console.log('error')
+        }
+        
+
+});
+
+</script>
+<%- include ("footer.ejs") %>
+</body>
+</html>
