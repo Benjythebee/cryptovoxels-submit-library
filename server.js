@@ -106,7 +106,6 @@ app.post('/sendReport', function(req, res) {
 })
 
 app.post('/submit_file', function(req, res) {
-  console.log(req.headers.host)
     // 'profile_pic' is the name of our file input field in the HTML form
     let upload = multer({ storage: storage, fileFilter: filter.voxFilter }).single("voxfile");
 
@@ -128,7 +127,7 @@ app.post('/submit_file', function(req, res) {
         }
 
         // Display uploaded image for user validation
-        res.status(200).send({err:false,msg:httpString+'://'+process.env.HOST+':'+PORT +'/'+req.file.filename});
+        res.status(200).send({err:false,msg:httpString+'://'+req.headers.host+':'+PORT +'/'+req.file.filename});
     });
 });
 
