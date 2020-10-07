@@ -39,7 +39,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'u/');
+        cb(null, folderName+'/');
     },
 
     // By default, multer removes file extensions so let's add them back
