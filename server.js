@@ -9,10 +9,9 @@ var multer = require('multer')
 var nodemailer = require("nodemailer")
 var axios = require('axios');
 var util = require('util')
-//var dotenv = require('dotenv')
-if(process.env.NODE_ENV=="development"){
-  require('dotenv').config()
-}
+var dotenv = require('dotenv')
+require('dotenv').config()
+
 
 const { version } = require('./package.json');
 var filter = require('./filter.js')
@@ -56,7 +55,7 @@ app.post('/sendReport', function(req, res) {
   async function main(msg) {
     const Body=msg.report
     console.log(Body)
-    let configMail=process.env.smtpNodeMailer.toString()
+    let configMail= process.env.smtpNodeMailer.toString()
     let transporter = nodemailer.createTransport(configMail)
     transporter.verify(function(error, success) {
       if (error) {
@@ -127,7 +126,8 @@ app.post('/submit_file', function(req, res) {
         }
 
         // Display uploaded image for user validation
-        var url = process.env.NODE_ENV=="development"? httpString+'://'+req.headers.host+':'+PORT +'/'+req.file.filename : httpString+'://'+req.headers.host+'/'+req.file.filename 
+
+        var url = httpString+'://'+req.headers.host+'/'+req.file.filename 
 
         res.status(200).send({err:false,msg:url});
     });
