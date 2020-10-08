@@ -21,7 +21,7 @@ var filter = require('./filter.js')
 
 const PORT = process.env.PORT || 8000;
 const httpString=process.env.NODE_ENV=="development"?'http':'https'
-const mailSMTP= process.env.NODE_ENV=="development"? process.env.smtpNodeMailer: process.env.smtpNODEMAILER
+const mailSMTP= process.env.smtpNodeMailer;
 
 // ----------------------- Engine variables
 //app.set('views', path.join(__dirname, './views'))
