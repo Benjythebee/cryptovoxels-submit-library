@@ -111,7 +111,7 @@ App = {
     if(index == (arrayBoxes.length - 1) && index!=0){
       
       var MenuTemplate=node.find('nav').clone();
-      console.log(MenuTemplate[0])
+
       $(arrayBoxes[index-1]).find('.media-content').append(MenuTemplate[0])
 
       node.remove()
@@ -186,7 +186,6 @@ App = {
                 //App.payload.addFileToPayload({vox:res.data.msg,imgPath:'',name:e.target.fileName,size:''})
                 App.filenames[indexOfBox]=e.target.fileName
               } 
-              console.log(App.payload)
               var newPayloadTotal=App.payload.computeTotalSize()
               $(".Total_weight").html(bytesToSize(newPayloadTotal))
               upload_vox(res.data.msg,ParentofElement,e.target.fileName)
@@ -224,12 +223,20 @@ App = {
       </div>
       `)
       App.modal.show('Sending submission')
-      axios.post("/sendReport", {report:json})
+      axios.post("/sendReport", json)
       .then(res => { // then print response status
-        return true
+
+        if(res.data=='captcha'){
+          alert('Please check the reCaptcha')
+        }else if(res.data=='Submitted'){
+          App.modal.close()
+          location.reload();
+          return res.data
+        }
+
       })
       .catch(err => { // then print response status
-        console.log('not sent')
+        alert('There was an error...')
         return false
       })
     },

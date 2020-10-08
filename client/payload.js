@@ -4,6 +4,7 @@ class Payload {
         this._terms=false,
         this._files=[]
         this._totalSize=0
+        this.recaptcha=''
     }
     set discord(discordname) {
       this._discord = discordname;
@@ -30,6 +31,17 @@ class Payload {
       get getSize() {
         return this._totalSize;
       }
+      set token(token) {
+        this.recaptcha = token;
+      }
+      get token() {
+        return this.recaptcha;
+      }
+      setToken(s){
+        this['g-recaptcha-response'] =s
+      }
+      
+
       addSize(s){
         var c = parseInt(this._totalSize) + parseInt(s)
         this._totalSize =c

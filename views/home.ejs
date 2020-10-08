@@ -184,10 +184,16 @@
                                
                               </div>
                     <div class="container mt-5">
-                            <div class="">
-                                <button class="button is-info is-rounded" id="submit_files">Submit <i class="fa fa-upload ml-1"></i></button>
-                                <p class="Total_weight"></p>
+                            <div class="level is-mobile">
+                                
+                                <form action="/" method="POST" id="submit-form">
+                                    <button class="button is-info is-rounded" type="submit" id="submit_files">Submit <i class="fa fa-upload ml-1"></i></button>
+                                    
+                                    <%- captcha %>
+                                </form>
                             </div>
+                            <p class="Total_weight"></p>
+                            
                         </div>
     
                   </div>
@@ -258,6 +264,8 @@
     </section>
 
     <!--/container-->
+
+
 
 
 <script type="text/javascript">
@@ -596,21 +604,38 @@ $('#upload_form').on('keyup keypress', function(e) {
 
     };
 
-    $("#submit_files").click(function(){
+    $("#submit_files").on('click',e=>{
+        e.preventDefault()
 
-        if(document.getElementById("termsCheck").checked && $("#discordId").val()!="" ){
+        var submitOK = true;
+        if(App.payload.files.length>0){
+            for(var i=0;i<App.payload.files.length;i++){
+            if(App.payload.files[i].imgPath==''){
+                submitOK= false;
+            }
+            if(App.payload.files[i].vox==''){
+                submitOK= false;
+            }
+        }
+        }else{
+            submitOK=false
+        }
+
+        if(!submitOK){
+            alert("File(s) or screenshot(s) is missing!")
+        }
+        else if(document.getElementById("termsCheck").checked && $("#discordId").val()!=""){
+        
             if(App.payload.getSize<52428800){
-                
-                App.payload.discord=$("#discordId").val()
+                var params=new URLSearchParams($('#submit-form').serialize());
+                App.payload.setToken(params.get("g-recaptcha-response"));
+                App.payload.discord=$("#discordId").val().toString()
                 App.payload.terms=true
                 //App.payload.computeTotalSize()
                 var jsonSubmission= App.payload
                 //var jsonSubmission= {Discord: $("#discordId").val() , terms: true ,files: App.files}
                 App.sendSubmission(jsonSubmission).then(response=>{
-                    $('.modal-card').find('.modal-card-body').html('<div class="level-item"><p><strong>Submission sent!</strong></p><p>Thank you!</p></div>')
-                    setTimeout(()=>{
-                        App.modal.close()
-                    },1500)
+                    $('.modal-card').find('.modal-card-body').html('<div class="level-item"><p><strong>Submission sent!</strong></p><p> Please wait a few seconds...</p></div>')
                     
                     console.log(response)
                 })
@@ -623,7 +648,6 @@ $('#upload_form').on('keyup keypress', function(e) {
             setTimeout(()=>{
                 App.modal.close()
             },1500)
-            console.log('error')
         }
         
 

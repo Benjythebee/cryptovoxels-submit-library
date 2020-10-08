@@ -47,15 +47,19 @@ const storage = multer.diskStorage({
     }
 });
 
+// RECAPTCHA -------------------
+var Recaptcha = require('express-recaptcha').RecaptchaV2;
+//import Recaptcha from 'express-recaptcha'
+const recaptcha= process.env.NODE_ENV=="development"? new Recaptcha(process.env.G_SITE_KEY_LOCAL, process.env.G_SECRET_KEY_LOCAL) :new Recaptcha(process.env.G_SITE_KEY, process.env.G_SECRET_KEY);
 
-app.get('/',function(req,res){
-    res.render('home',{version:version})
+// ROUTING ------------------
+app.get('/',recaptcha.middleware.render,function(req,res){
+    res.render('home',{version:version, captcha:res.recaptcha })
 })
 
 app.post('/sendReport', function(req, res) {
   async function main(msg) {
-    const Body=msg.report
-    console.log(Body)
+    const Body=msg
     let configMail= mailSMTP.toString()
     let transporter = nodemailer.createTransport(configMail)
     transporter.verify(function(error, success) {
@@ -67,7 +71,7 @@ app.post('/sendReport', function(req, res) {
     });
 
     var message = {
-      from: "wiki@cryptovoxels.com",
+      from: "Benjy.larcher@aol.com",
       to: "Benjy.larcher@aol.com",
       subject: "[Submission] New submission by "+Body.Discord,
       attachments:[],
@@ -98,11 +102,20 @@ app.post('/sendReport', function(req, res) {
     let info = await transporter.sendMail(message)
     console.log("Message sent: %s", info.messageId);
     transporter.close();
-    res.status(200).send()
+    res.status(200).send('Submitted')
     
   }
+  recaptcha.verify(req, function(error, data){
 
-  main(req.body).catch(console.error);
+    console.log(req.recaptcha)
+    console.log(error)
+    if (!error) {
+      main(req.body).catch(console.error);
+    } else {
+      res.status(200).send('captcha')
+    }
+  });
+  
 })
 
 app.post('/submit_file', function(req, res) {
