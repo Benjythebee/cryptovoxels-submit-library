@@ -21,6 +21,7 @@ var filter = require('./filter.js')
 
 const PORT = process.env.PORT || 8000;
 const httpString=process.env.NODE_ENV=="development"?'http':'https'
+const mailSMTP= process.env.NODE_ENV=="development"? process.env.smtpNodeMailer: process.env.smtpNODEMAILER
 
 // ----------------------- Engine variables
 //app.set('views', path.join(__dirname, './views'))
@@ -55,7 +56,7 @@ app.post('/sendReport', function(req, res) {
   async function main(msg) {
     const Body=msg.report
     console.log(Body)
-    let configMail= process.env.smtpNodeMailer.toString()
+    let configMail= mailSMTP.toString()
     let transporter = nodemailer.createTransport(configMail)
     transporter.verify(function(error, success) {
       if (error) {
