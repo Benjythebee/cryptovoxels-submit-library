@@ -28,14 +28,15 @@ const mailSMTP= process.env.smtpNodeMailer;
 
 app.use(express.static('client'));
 app.use(express.static('u'));
-app.use('/bulma', express.static(__dirname + '/node_modules/bulma'));
+app.use('/css', express.static(__dirname + '/node_modules/bulma/css'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery'));
+app.use('/components', express.static(__dirname + '/components'));
 
 
 //app.use(cors())
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
+app.use(bodyParser.json({limit: '25mb'}));
+app.use(bodyParser.urlencoded({limit: '25mb', extended: true }));
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'u/');
@@ -73,7 +74,7 @@ app.post('/sendReport', function(req, res) {
     var message = {
       from: "Benjy.larcher@aol.com",
       to: "Benjy.larcher@aol.com",
-      subject: "[Submission] New submission by "+Body.Discord,
+      subject: "[Submission] New submission by "+Body._discord,
       attachments:[],
       text: Body._discord+" sent "+Body._files.length+" files; Has accepted the terms: "+Body._terms,
       html: Body._discord+" sent "+Body._files.length+" files; Has accepted the terms: "+Body._terms
@@ -106,9 +107,6 @@ app.post('/sendReport', function(req, res) {
     
   }
   recaptcha.verify(req, function(error, data){
-
-    console.log(req.recaptcha)
-    console.log(error)
     if (!error) {
       main(req.body).catch(console.error);
     } else {

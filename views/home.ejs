@@ -8,32 +8,21 @@
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
     <!--  JQUERY -->
     <script src="/jquery/dist/jquery.min.js"></script>
-    <!--<script src="../extra/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-    <link href="../extra/jquery-ui-1.12.1/jquery-ui.min.css"  rel="stylesheet"> -->
 
-    <!--  BUNDLE INCLUDING ETHERJS, AXIOS, THREE and ORBITCONTROLS -->
-    <!--<script src="../extra/ccapture.js/build/CCapture.min.js"></script>-->
-    <!-- Include WebM Writer if you want to export WebM -->
-   <!--<script src="../extra/ccapture.js/src/webm-writer-0.2.0.js"></script>-->
-    <!-- Include gifjs if you want to export GIF -->
-    <!--<script src="../extra/ccapture.js/src/gif.js"></script>-->
 
     <script type="module" src="../bundle2.js"></script>
+    <script src="/components/modals.js"></script>
     <link href="../index.scss" rel="stylesheet">
     <!--  BOOTSTRAP / BULMA -->
-    <link href="/bulma/css/bulma.min.css" rel="stylesheet">
-     <!--<link href="../extra/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="../extra/bootstrap/dist/js/bootstrap.min.js"></script>-->
+    <link href="/css/bulma.min.css" rel="stylesheet">
+
     <!--  FONT AWESOME -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
     <!--  VOX PARSER -->
     
     <script defer src="../vox.js-master/build/vox.js"></script>
-    <!--<script src="https://cdn.rawgit.com/daishihmr/vox.js/1.0.3/build/vox.min.js" //Newer version of the parser, but doesn't work currently
-        charset="utf-8"
-        type="text/javascript">
-</script>-->
+
 
     <title>Submit Vox model</title>
 
@@ -52,33 +41,22 @@
 <%- include ("menu.ejs") %>
 <div class="modal">
     <div class="modal-background"></div>
-    <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title"></p>
-          <button class="delete" aria-label="close"></button>
-        </header>
-        <section class="modal-card-body">
-            <div class="ball-loader">
-                <div class="ball-loader-ball ball1"></div>
-                <div class="ball-loader-ball ball2"></div>
-                <div class="ball-loader-ball ball3"></div>
-            </div>
-        </section>
-      </div>
+        <div class="modal-card">
 
+        </div>
     <button class="modal-close is-large is-hidden" aria-label="close"></button>
   </div>
 <section class="section">
+    <noscript>
+        <div class="container is-max-desktop">
+            <div class="notification is-warning">
+              You need javascript activated to use this website properly!
+            </div>
+          </div>
+     </noscript>
 
 
-
-    <div class="container" id="profilecontainer">
-        <div class='alert alert-warning alert-dismissible hide' id="changeNetworkAlert" role='alert' hidden>
-            <strong></strong>
-            <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
-            <span aria-hidden='true'>&times;</span>
-            </button>
-      </div>
+    <div class="container" id="">
       <div class="columns">
         <div class="column is-8">
 
@@ -588,18 +566,10 @@ $('#upload_form').on('keyup keypress', function(e) {
                 
                 App.payload.setFileAttribute(index,'imgPath',pngUrl)
                 App.payload.setFileAttribute(index,'sizeX',JParentofElement.find('#voxVoxelSize').html())
-                //App.files[index].imgPath=pngUrl
-                //App.files[index].size=JParentofElement.find('#voxVoxelSize').html()
+
                 screenshotButton.html('Take a screenshot')
                 })
         });
-
-
-        /*$("#loadCustomPreset").on('click',e=>{
-            cancelAnimationFrame(renderisrunning);
-
-        minter.setAddPreset(urlinput)
-        })*/
         
 
     };
@@ -626,7 +596,7 @@ $('#upload_form').on('keyup keypress', function(e) {
         }
         else if(document.getElementById("termsCheck").checked && $("#discordId").val()!=""){
         
-            if(App.payload.getSize<52428800){
+            if(App.payload.getSize<26214400){
                 var params=new URLSearchParams($('#submit-form').serialize());
                 App.payload.setToken(params.get("g-recaptcha-response"));
                 App.payload.discord=$("#discordId").val().toString()
@@ -635,16 +605,18 @@ $('#upload_form').on('keyup keypress', function(e) {
                 var jsonSubmission= App.payload
                 //var jsonSubmission= {Discord: $("#discordId").val() , terms: true ,files: App.files}
                 App.sendSubmission(jsonSubmission).then(response=>{
-                    $('.modal-card').find('.modal-card-body').html('<div class="level-item"><p><strong>Submission sent!</strong></p><p> Please wait a few seconds...</p></div>')
+                    $('.modal-card').html(Modals.loading())
                     
-                    console.log(response)
+                    App.modal.show()
+                }).catch(err => {
+                    $('.modal-card').html(Modals.error())
                 })
             }else{
-                alert("The Submission payload is too heavy! (more than 50mb)")
+                alert("The Submission payload is too heavy! (more than 25mb)")
             }// end check Size payload
         }else{
             App.payload.terms=false
-            $('.modal').find('.modal-card-body').html('<div class="has-text-centered"><p><strong>Error!</strong></p><p>Some inputs are missing</p></div>')
+            $('.modal-card').html(Modals.error())      
             setTimeout(()=>{
                 App.modal.close()
             },1500)

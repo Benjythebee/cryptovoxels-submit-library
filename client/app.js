@@ -26,7 +26,10 @@ App = {
       App.payload = new PayLoad()
       // Render Tasks
       App.clonedItem=$("#repeatable_media")[0].cloneNode(true)
-      
+      App.modal = new BulmaModal(".modal") 
+      $('.modal-card').html(Modals.welcome())
+      App.modal.show()
+
       $("#media_list").on('click',"#addBox",e=>{
 
         App.addBox($(e.target).closest('div[class^="box"]'))
@@ -36,8 +39,6 @@ App = {
         App.removeBox($(e.target).closest('div[class^="box"]'))
       })
       $("#media_list").on('click',".loadToCanvas",async (e)=>{
-
-
 
         var dom=$(e.target).closest('div[class^="box"]')[0]
         var index = await App.getElementIndex(dom);
@@ -54,26 +55,10 @@ App = {
 
       })
       
-      App.modal = new BulmaModal(".modal") 
+
       $(".showTerms").on('click',e=>{
-        $('.modal-card-body').html(`<div class=""><p class="modal-text has-text-black">Submiting your models and discord ID means you're:</p>
-        <ul>
-        <li>- Letting go of your private ownership rights of the model. This means you are</li>
-        <ul>
-          <li>*Letting others copy,modify the model however they wish.</li>
-          <li>*Letting others distribute your model however they wish.</li>
-      </ul>
-        <li>- Allowing a moderator to contact you on discord if there is a problem with your submission</li>
-        </ul>
-        </div>
-        <div class="">
-        <p></p>
-        <p class="modal-text has-text-black">
-        We will usually disclose the name of contributors at the bottom at the page of the Voxel Library. 
-        However, if your name doesn't appear, you may contact a Moderator.
-        </p></div>`)
-        $('.modal').find('.modal-close').removeClass("is-hidden")
-        App.modal.show('Terms of submission')
+        $('.modal-card').html(Modals.terms())
+        App.modal.show()
       })
       $(".modal-close").on('click',e=>{
         App.modal.close()
@@ -116,6 +101,12 @@ App = {
 
       node.remove()
     }
+
+    if(index>0){
+      App.payload.files[index].splice(index, 1);
+      App.payload.computeTotalSize();
+      }
+    
     
 },
     uploadFile: async(element)=>{
@@ -213,31 +204,25 @@ App = {
     },
 
     sendSubmission: async(json)=>{
-      $('.modal-card-body').html(`
-      <div class="has-text-centered">
-      <div class="ball-loader ">
-        <div class="ball-loader-ball ball1"></div>
-        <div class="ball-loader-ball ball2"></div>
-        <div class="ball-loader-ball ball3"></div>
-      </div>
-      </div>
-      `)
-      App.modal.show('Sending submission')
+
       axios.post("/sendReport", json)
       .then(res => { // then print response status
 
         if(res.data=='captcha'){
           alert('Please check the reCaptcha')
         }else if(res.data=='Submitted'){
-          App.modal.close()
-          location.reload();
-          return res.data
+          $('.modal-card').html(Modals.submitted())
+          setTimeout(()=>{
+            App.modal.close()
+            location.reload();
+          },1500)
+
         }
 
       })
       .catch(err => { // then print response status
-        alert('There was an error...')
-        return false
+        //alert('There was an error...')
+        return err
       })
     },
     blockToggle: async()=>{
