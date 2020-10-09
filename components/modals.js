@@ -83,7 +83,6 @@ Modals={
               <button class="delete" aria-label="close"></button>
             </header>
             <section class="modal-card-body">
-            <section class="modal-card-body">
             <section class="hero is-primary">
             <div class="hero-body">
             <div class="container">
@@ -102,20 +101,21 @@ Modals={
         <div class="block">
             <p class="modal-text">Submiting your models and discord ID means you're:</p>
             <ul>
-            <li>- Letting go of your private ownership rights of the model. This means you are</li>
+            <li> Letting go of your private ownership rights of the model. This means you are</li>
             <ul>
-              <li>*Letting others copy,modify the model however they wish.</li>
-              <li>*Letting others distribute your model however they wish.</li>
+              <li>Letting others copy,modify the model however they wish.</li>
+              <li>Letting others distribute your model however they wish.</li>
           </ul>
-          <li>- Allowing a moderator to contact you on discord if there is a problem with your submission</li>
+          <li> Allowing a moderator to contact you on discord if there is a problem with your submission</li>
           </ul>
 
 
             </div>
             <div class="block">
-                <p class="modal-text">
-                We will usually disclose the name of contributors at the bottom at the page of the Voxel Library. 
-                However, if your name doesn't appear, you may contact a Moderator.
+                <p class="modal-text is-italic">
+                We will usually disclose the name of contributors at the bottom at the page of the Voxel Library.
+                However,
+                .
                 </p>
             </div>
             <div class="block">
@@ -164,7 +164,6 @@ Modals={
                 <p>Some inputs are missing...</p>
                 </div>
             </section>
-            </div>
             <footer class="modal-card-foot">
             </footer>`
     }
