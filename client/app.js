@@ -22,7 +22,7 @@ App = {
       // Update app loading state
       
       App.setLoading(true)
-      App.blockToggle()
+
       App.payload = new PayLoad()
       // Render Tasks
       App.clonedItem=$("#repeatable_media")[0].cloneNode(true)
@@ -245,9 +245,6 @@ App = {
         //alert('There was an error...')
         return err
       })
-    },
-    blockToggle: async()=>{
-      $('.toggleInput').prop('disabled', function(i, v) { return !v; });
     },
     setLoading: (boolean) => {
       App.loading = boolean
