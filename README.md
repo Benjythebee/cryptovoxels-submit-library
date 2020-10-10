@@ -8,5 +8,5 @@ PORT=8000
 NODE_ENV="development"
 HOST="localhost"
 smtpNodeMailer='smtps://username:Password@YourSMTPURL/?pool=true'
-
+SEND_TO_EMAIL="yourEmail@somewhere.com"
 ```
