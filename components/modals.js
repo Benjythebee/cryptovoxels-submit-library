@@ -56,9 +56,11 @@ Modals={
                             <img src='/components/castle_bad_example.png' class="image is-128x128" alt="example">
                         </div>
                     </div>
-
                     <div class="block">
-                        <h5>This form only takes a maximum payload of 24mb.</h5>
+                        <h5 class="subtitle">Note:</h5>
+                        <p>If your model has less than 5 colors, there is no point in uploading '
+                        the same vox model with different color.</p>
+                        <h6>This form only takes a maximum payload of 24mb.</h6>
                     </div>
     
                 </div>
