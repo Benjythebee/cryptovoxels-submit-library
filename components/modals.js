@@ -58,7 +58,7 @@ Modals={
                     </div>
                     <div class="block">
                         <h5 class="subtitle">Note:</h5>
-                        <p>If your model has less than 5 colors, there is no point in uploading '
+                        <p>If your model has less than 5 colors, there is no point in uploading
                         the same vox model with different color.</p>
                         <h6>This form only takes a maximum payload of 24mb.</h6>
                     </div>
@@ -127,7 +127,7 @@ Modals={
                 -When the models you send are accepted, we usually disclose the name of contributors
                 at the bottom at the page of the Voxel Library.</p>
                 <p class="modal-text is-italic">
-                - Whether your submission is accepted or not is at moderator's discretion.
+                - Whether your submission is accepted or not is at moderators' discretion.
                 
                 </p>
             </div>
