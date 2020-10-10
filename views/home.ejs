@@ -76,7 +76,7 @@
                               <div class="field">
                                 <div class="control">
                                   <label class="checkbox">
-                                    <input type="checkbox" id='termsCheck' required>
+                                    <input type="checkbox" id='anonimityCheck' required>
                                     Do not include my discord as a contributor.
                                   </label>
                                 </div>
@@ -557,6 +557,11 @@ $('#upload_form').on('keyup keypress', function(e) {
             var imgFileSize = Math.round((pngUrl.length - head.length)*3/4) ;
             App.payload.setFileAttribute(index,'weightimg',parseInt(imgFileSize))
             var newPayloadSize= App.payload.computeTotalSize()
+            if(newPayloadSize>26214400){
+                $(".Total_weight").css('color','red')
+              }else{
+                $(".Total_weight").css('color','black')
+              }
             $(".Total_weight").html(bytesToSize(newPayloadSize))
 
             canvas.toBlob((blob) => {
@@ -583,7 +588,8 @@ $('#upload_form').on('keyup keypress', function(e) {
 
     $("#submit_files").on('click',e=>{
         e.preventDefault()
-
+        App.payload.anonymous = document.getElementById("anonimityCheck").checked
+        
         var submitOK = true;
         if(App.payload.files.length>0){
             for(var i=0;i<App.payload.files.length;i++){

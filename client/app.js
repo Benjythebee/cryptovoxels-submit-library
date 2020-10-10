@@ -178,6 +178,12 @@ App = {
                 App.filenames[indexOfBox]=e.target.fileName
               } 
               var newPayloadTotal=App.payload.computeTotalSize()
+              if(newPayloadTotal>26214400){
+                $(".Total_weight").css('color','red')
+              }else{
+                $(".Total_weight").css('color','black')
+              }
+
               $(".Total_weight").html(bytesToSize(newPayloadTotal))
               upload_vox(res.data.msg,ParentofElement,e.target.fileName)
               
