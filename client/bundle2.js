@@ -255,6 +255,7 @@ global.OrbitControls = require('three/examples/js/controls/OrbitControls')
 class Payload {
     constructor() {
         this._discord="",
+        this._anonymous=false;
         this._terms=false,
         this._files=[]
         this._totalSize=0
@@ -265,6 +266,12 @@ class Payload {
     }
     get discord() {
       return this._discord;
+    }
+    set anonymous(bool) {
+      this._anonymous = bool;
+    }
+    get anonymous() {
+      return this._anonymous;
     }
     set terms(bool) {
         this._terms = bool;
