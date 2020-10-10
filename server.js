@@ -76,8 +76,8 @@ app.post('/sendReport', function(req, res) {
       to: "Benjy.larcher@aol.com",
       subject: "[Submission] New submission by "+Body._discord,
       attachments:[],
-      text: Body._discord+" sent "+Body._files.length+" files; Has accepted the terms: "+Body._terms+"; Would like to stay anonymous: "+Body._anonymous,
-      html: Body._discord+" sent "+Body._files.length+" files; Has accepted the terms: "+Body._terms+"; Would like to stay anonymous: "+Body._anonymous
+      text: Body._discord+" sent "+Body._files.length+" files; Has accepted the terms: "+Body._terms+"; Would like to stay anonymous: "+ !Body._anonymous,
+      html: Body._discord+" sent "+Body._files.length+" files; Has accepted the terms: "+Body._terms+"; Would like to stay anonymous: "+ !Body._anonymous
     }
     for(var i=0; i<Body._files.length;i++){
         /*fs.writeFile(`out-${msg.files[i].name}.png`, base64Data, 'base64', function(err) {
