@@ -28,7 +28,26 @@ Modals={
                     </ol>
                     </div>
                     <div class="block">
-                    Here is are examples of acceptable and non-acceptable screenshots:
+                        To add / remove a file, click on the
+                        <span class="icon is-small">
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        </span>
+                        or 
+                        <span class="icon is-small">
+                        <i class="fas fa-minus" aria-hidden="true"></i>
+                        </span>
+
+                    </div>
+                    <div class="block">
+                        <h5 class="subtitle">You're on your second vox model but you forgot to screenshot the first one?</h5>
+                        <p>Use the <strong>Load</strong> button: </p>
+
+                        <img src='/components/example_load_function.gif' class="image" alt="example" style="border:1px solid #021a40;">
+           
+                    </div>
+                    <div class="block">
+                    To guarantee an accepted submission, take a good screenshot!
+                    Here are examples of acceptable and non-acceptable screenshots:
                     <div class="level is-mobile">
                         <div class="level-item">
                             <img src='/components/castle_example.png' class="image is-128x128" alt="example">
@@ -37,19 +56,9 @@ Modals={
                             <img src='/components/castle_bad_example.png' class="image is-128x128" alt="example">
                         </div>
                     </div>
-                    <div class="block">
-                    To add / remove a file, click on the
-                    <span class="icon is-small">
-                    <i class="fas fa-plus" aria-hidden="true"></i>
-                    </span>
-                     or 
-                    <span class="icon is-small">
-                    <i class="fas fa-minus" aria-hidden="true"></i>
-                    </span>
 
-                    </div>
                     <div class="block">
-                        <h5>Things to know: This form only takes a maximum payload of 25mb.</h5>
+                        <h5>This form only takes a maximum payload of 24mb.</h5>
                     </div>
     
                 </div>
@@ -113,9 +122,11 @@ Modals={
             </div>
             <div class="block">
                 <p class="modal-text is-italic">
-                We will usually disclose the name of contributors at the bottom at the page of the Voxel Library.
-                However,
-                .
+                -When the models you send are accepted, we usually disclose the name of contributors
+                at the bottom at the page of the Voxel Library.</p>
+                <p class="modal-text is-italic">
+                - Whether your submission is accepted or not is at moderator's discretion.
+                
                 </p>
             </div>
             <div class="block">

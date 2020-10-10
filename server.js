@@ -72,8 +72,8 @@ app.post('/sendReport', function(req, res) {
     });
 
     var message = {
-      from: "Benjy.larcher@aol.com",
-      to: "Benjy.larcher@aol.com",
+      from: process.env.SEND_TO_EMAIL,
+      to: process.env.SEND_TO_EMAIL,
       subject: "[Submission] New submission by "+Body._discord,
       attachments:[],
       text: Body._discord+" sent "+Body._files.length+" files; Has accepted the terms: "+Body._terms+"; Would like to stay anonymous: "+ !Body._anonymous,

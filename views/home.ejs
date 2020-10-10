@@ -169,14 +169,19 @@
                                
                               </div>
                     <div class="container mt-5">
-                            <div class="level is-mobile">
+                            
                                 
                                 <form action="/" method="POST" id="submit-form">
-                                    <button class="button is-info is-rounded" type="submit" id="submit_files">Submit <i class="fa fa-upload ml-1"></i></button>
-                                    
-                                    <%- captcha %>
+                                    <div class="level is-mobile">
+                                        <div class="level-item">
+                                            <%- captcha %>
+                                        </div>
+                                        <div class="level-item">
+                                        <button class="button is-info is-rounded mb-5" type="submit" id="submit_files">Submit <i class="fa fa-upload ml-1"></i></button>
+                                        </div>
+                                    </div>
                                 </form>
-                            </div>
+                            
                             <p class="Total_weight"></p>
                             
                         </div>
