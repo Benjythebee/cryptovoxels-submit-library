@@ -51,7 +51,7 @@ App = {
         }*/
         
         upload_vox(urlInput,dom,App.filenames[index])
-
+        App.toggleScreenshotButton(index)
 
       })
       
@@ -130,6 +130,8 @@ App = {
       
       var indexOfBox = await App.getElementIndex(ParentofElement)
 
+
+
       var voxFile = element.files[0];
 
 /* Upload file function is here*/
@@ -186,7 +188,7 @@ App = {
 
               $(".Total_weight").html(bytesToSize(newPayloadTotal))
               upload_vox(res.data.msg,ParentofElement,e.target.fileName)
-              
+              App.toggleScreenshotButton(indexOfBox)
 
             }else{
               JParentofElement.find('.errorInvalid').removeClass("is-hidden");
@@ -208,7 +210,20 @@ App = {
         
         oReader.readAsDataURL(voxFile);
     },
+    toggleScreenshotButton: async (index)=>{
+      var arrayBoxes=$('#media_list').children();
+      for(var i=0; i<arrayBoxes.length;i++){
+        if($(arrayBoxes[i]).find('.file-input').get(0).files.length != 0){
+          if(i==index){
+            console.log(arrayBoxes[index])
+            $(arrayBoxes[i]).find('#takescreen').attr('disabled',false)
+          }else{
+            $(arrayBoxes[i]).find('#takescreen').attr('disabled',true)
+          }
+        }
 
+      }
+    },
     sendSubmission: async(json)=>{
 
       axios.post("/sendReport", json)
