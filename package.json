@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "ao-mesher": "^0.2.10",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babylonjs": "^4.1.0",
     "bulma": "^0.9.1",
     "dotenv": "^8.2.0",
